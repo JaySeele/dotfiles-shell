@@ -1,0 +1,119 @@
+"$schema" = 'https://starship.rs/config-schema.json'
+
+# === 全局性能 ===
+scan_timeout = 10
+command_timeout = 500
+add_newline = true
+
+# === 布局 ===
+#  $fill 可以让右边信息不下移动一行显示
+# 行1: 路径 git 语言图标+版本 ...fill... 耗时 时间
+# 行2: 输入符
+format = """
+$directory\
+$git_branch\
+$git_status\
+$nodejs\
+$golang\
+$python\
+$lua\
+$docker_context\
+$time\
+$cmd_duration\
+$custom\
+\n$character"""
+
+right_format = ""
+
+# === Fill ===
+[fill]
+symbol = " "
+
+# === Directory ===
+[directory]
+style = "fg:#FFDEAD"
+format = "[\ue635Mac: $path ]($style)"
+truncation_length = 0
+truncate_to_repo = false
+# home_symbol = "/Users/soc"
+
+# === Disk ===
+# 提示符里的硬盘占用，口径与 fastfetch 的 Disk 一致：used / (used + avail)
+# 图标 U+F0A0 与 fastfetch 的 Disk 模块同一个
+# 注意：这是本配置里唯一的 custom 模块，所以 format 里写 $custom 就能引用它
+[custom.disk]
+command = '''df -kP "$HOME" | awk 'NR==2 { u=$3; a=$4; print int(u/(u+a)*100) }''''
+when = true
+style = "fg:#E5C07B"
+# format = "[ \uf0a0 $output% ]($style)"
+format = "[ Disk:$output% ]($style)"
+
+# === Git ===
+[git_branch]
+symbol = ""
+# style = "fg:#769ff0"
+format = "[$symbol $branch ]($style)"
+truncation_length = 20
+truncation_symbol = "…"
+
+[git_status]
+# style = "fg:#8b95b5"
+format = '([$all_status$ahead_behind]($style))'
+conflicted = " ✘"
+ahead = "⇡"
+behind = "⇣"
+diverged = "⇡⇣"
+up_to_date = ""
+untracked = "?"
+stashed = "≡"
+modified = "✚"
+staged = "●"
+renamed = "»"
+deleted = "✖"
+
+# === Languages ===
+[nodejs]
+symbol = ""
+# style = "fg:#68A063"
+format = "[ $symbol $version ]($style)"
+
+[golang]
+symbol = ""
+# style = "fg:#00B7D8"
+format = "[ $symbol $version ]($style)"
+
+[python]
+symbol = ""
+style = "fg:#509ede"
+format = "[ $symbol $version ]($style)"
+
+[lua]
+symbol = ""
+# style = "fg:#4B6EAF"
+format = "[ $symbol $version ]($style)"
+
+# === Docker ===
+[docker_context]
+symbol = ""
+# style = "fg:#2496ED"
+format = "[ $symbol ]($style)"
+only_with_files = true
+detect_files = ["Dockerfile", "docker-compose.yml", "docker-compose.yaml"]
+
+# === Info ===
+[cmd_duration]
+min_time = 2000
+
+[time]
+disabled = false
+time_format = "%R-%A"
+use_12hr = false
+style = "fg:#fffff0"
+# style = "bg:#1d2230"
+format = "[  $time ]($style)"
+
+# === Character ===
+[character]
+success_symbol = "[ > ](fg:#AEEEEE bold)"
+error_symbol = "[ - ](fg:#ff6b6b bold)"
+# vicmd_symbol = "[ ~ ](fg:#ffd866 bold)"
