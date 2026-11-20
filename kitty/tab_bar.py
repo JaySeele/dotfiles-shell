@@ -29,6 +29,8 @@ def _c(value: "str | int") -> int:
     return as_rgb(int(h, 16))
 
 
+# 半透明窗口：这些色值如果出现在 kitty.conf 的 transparent_background_colors 里，
+# 对应的胶囊背景才会跟随 background_opacity（改色时两边要一起改，改完重启 kitty）。
 CRUST = "#11111B"
 BASE = "#1E1E2E"
 SURFACE0 = "#313244"
@@ -38,7 +40,7 @@ MAUVE = "#98F5FF"
 YELLOW = "#F9E2AF"
 PEACH = "#FAB387"
 
-BAR_BG = _c(CRUST)
+BAR_BG = 0  # 0 = 用终端默认背景，天然跟随 background_opacity
 ACTIVE_BG, ACTIVE_FG, ACTIVE_DIM = _c(MAUVE), _c(CRUST), _c(BASE)
 IDLE_BG, IDLE_FG, IDLE_DIM = _c(SURFACE0), _c(SUBTEXT0), _c(OVERLAY0)
 DOT_ATTENTION, DOT_ACTIVITY = _c(PEACH), _c(YELLOW)
