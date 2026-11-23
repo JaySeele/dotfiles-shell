@@ -5,7 +5,7 @@ zsh · starship · kitty · fastfetch · lazygit
 ## 安装 / 重建软链
 
 ```bash
-~/dotfiles/shell/install.sh
+~/Git/shell/install.sh
 ```
 
 幂等：已存在的软链打印 `ok`，目标位置是真目录则打印 `skip`（不会覆盖）。
