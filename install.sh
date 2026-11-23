@@ -15,6 +15,6 @@ for src in "$repo_dir"/*/; do
     printf 'link  %s -> %s\n' "$link" "$src"
   fi
 done
-if [ -d "$repo_dir/kitty" ] && ! ls "$repo_dir"/kitty/font/*.ttf >/dev/null 2>&1; then
-  printf 'note  字体不入库，运行 %s/kitty/font/install.sh 安装（--check 可检查）\n' "$repo_dir"
+if [ -x "$repo_dir/kitty/font/install.sh" ] && ! "$repo_dir/kitty/font/install.sh" --check >/dev/null 2>&1; then
+  printf 'warn  字体缺失，运行 %s/kitty/font/install.sh 安装\n' "$repo_dir"
 fi
