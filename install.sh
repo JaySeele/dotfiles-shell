@@ -15,6 +15,6 @@ for src in "$repo_dir"/*/; do
     printf 'link  %s -> %s\n' "$link" "$src"
   fi
 done
-if [ -d "$repo_dir/kitty" ] && [ ! -d "$repo_dir/kitty/font" ]; then
-  printf 'warn  kitty/font 缺失，请把字体复制到 %s/kitty/font\n' "$repo_dir"
+if [ -d "$repo_dir/kitty" ] && ! ls "$repo_dir"/kitty/font/*.ttf >/dev/null 2>&1; then
+  printf 'note  字体不入库，按 %s/kitty/font/README.md 安装所需字体\n' "$repo_dir"
 fi
