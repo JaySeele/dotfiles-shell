@@ -1,0 +1,11 @@
+git:
+  autoFetch: false
+
+customCommands:
+  # P: 把当前分支同时推送到 gitee 和 github（覆盖 lazygit 内置的单远端 push）
+  # 没有该远端时跳过；两个远端指向同一 URL 时只推一次；任一失败返回非 0，lazygit 会弹错误
+  - key: 'P'
+    context: 'global'
+    description: 'Push to both gitee & github'
+    loadingText: 'Pushing to gitee & github...'
+    command: 'fail=0; seen=""; for r in gitee github; do u=$(git remote get-url "$r" 2>/dev/null) || continue; case " $seen " in *" $u "*) continue;; esac; seen="$seen $u"; git push "$r" HEAD || fail=1; done; exit $fail'
