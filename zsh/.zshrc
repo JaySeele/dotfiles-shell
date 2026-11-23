@@ -156,6 +156,7 @@ alias targz='tar xzvf'
 alias te='tree'
 alias xf='sudo xattr -rd com.apple.quarantine '
 alias zc='cd ~/.config'
+alias zg='cd ~/Git/'
 alias zk='cd ~/.config/kitty/'
 alias zm='cd /tmp'
 alias zs='cd /Users/soc/Library/Application\ Support/'
@@ -265,7 +266,7 @@ au() {
         npm outdated -g 2>/dev/null | grep -v '^@deepseek-ai/' || true
         # parseable 输出取 /node_modules/ 之后的目录名；空输出时数组为空
         pkgs=(${(f)"$(npm ls -g --depth=0 --parseable 2>/dev/null | sed -n 's#^.*/node_modules/##p' | grep -v '^@deepseek-ai/' | grep -v '^npm$')"})
-        if (( ${#pkgs[@]} )); then
+        if ((${#pkgs[@]})); then
             npm update -g "${pkgs[@]}" || failed+=(npm-globals)
         fi
         echo "ℹ️  Node: $(node -v 2>/dev/null), npm: $(npm -v 2>/dev/null)"
@@ -278,7 +279,7 @@ au() {
     echo "----------------------------------------"
     echo ""
 
-    if (( ${#failed[@]} )); then
+    if ((${#failed[@]})); then
         print -u2 "⚠️  未成功的步骤: ${(j: / :)failed}"
         return 1
     fi
