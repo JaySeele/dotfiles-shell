@@ -16,5 +16,5 @@ for src in "$repo_dir"/*/; do
   fi
 done
 if [ -d "$repo_dir/kitty" ] && ! ls "$repo_dir"/kitty/font/*.ttf >/dev/null 2>&1; then
-  printf 'note  字体不入库，按 %s/kitty/font/README.md 安装所需字体\n' "$repo_dir"
+  printf 'note  字体不入库，运行 %s/kitty/font/install.sh 安装（--check 可检查）\n' "$repo_dir"
 fi

@@ -44,7 +44,17 @@ symbol_map                                   U+F0000-U+FFFFD                   M
 
 ## 安装
 
-### macOS（一行）
+### macOS（推荐：脚本）
+
+```bash
+./install.sh              # 安装缺失的字体（已装的自动跳过，可重复执行）
+./install.sh --check      # 只检查，缺字体时退出码为 1
+./install.sh --dry-run    # 只显示会执行什么
+```
+
+脚本不依赖仓库里的 ttf：它用 Homebrew cask 安装，并按「字体是否已落到 `~/Library/Fonts`」判断是否已装，所以手动复制进去的字体同样会被认作已装。
+
+### macOS（手动 brew 一行）
 
 ```bash
 brew install --cask font-victor-mono-nerd-font font-lxgw-wenkai font-maple-mono-nf-cn
@@ -61,6 +71,8 @@ brew install --cask font-victor-mono-nerd-font font-lxgw-wenkai font-maple-mono-
 下载后双击安装，或把 `.ttf` 拖进「字体册」，也可直接复制到 `~/Library/Fonts`。
 
 ### Linux（Debian）
+
+`./install.sh` 在 Linux 上会打印手动步骤（各发行版包名不同，不硬编码下载地址）：
 
 ```bash
 mkdir -p ~/.local/share/fonts
