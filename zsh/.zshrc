@@ -127,30 +127,10 @@ compdef _z z
 
 # --- system ---
 alias a='yazi'
-alias au='\
-  echo "🍺 [1/3] 更新 Homebrew（系统工具和依赖）..."; \
-  ba; \
-  echo "----------------------------------------"; \
-  echo ""; \
-  echo "🟢 [2/3] 更新 Node.js (nvm) 和 npm 全局包（已排除 dsh，交 [3/3] 处理）..."; \
-  lazy_load_nvm; \
-  nvm install 22 --reinstall-packages-from=current; \
-  nvm alias default 22; \
-  npm install -g npm@latest; \
-  echo "📦 全局包可更新情况（已跳过 @deepseek-ai/*）："; \
-  npm outdated -g 2>/dev/null | grep -v "^@deepseek-ai/" || true; \
-  pkgs=($(npm ls -g --depth=0 --parseable 2>/dev/null | grep "/node_modules/" | sed "s#.*/node_modules/##" | grep -v "^@deepseek-ai/" | grep -v "^npm$")); \
-  if (( ${#pkgs[@]} )); then npm update -g "${pkgs[@]}"; fi; \
-  echo "✅ Node: $(node -v), npm: $(npm -v)"; \
-  echo "----------------------------------------"; \
-  echo ""; \
-  echo "🔍 [3/3] 检查并自动更新 dsh..."; \
-  dshup'
 alias c='clear'
 alias ch='rr ~/.thumbnails ~/.adobe ~/.ntfstool ~/.playwright-* ~/.dart-tool ~/.immich-photos-sync.log ~/.zsh-defer ~/Temp ~/.zcompdump* 2>/dev/null; echo "✅ 已清理无用缓存"'
 alias cls='clear'
 alias cp='cp -r'
-alias cpz='cp -r ~/.config/zsh/.zshrc ~/Documents/Git/zshrc/ && cd ~/Documents/Git/zshrc/'
 alias cz='cat ~/.config/zsh/.zshrc'
 alias e='exit'
 alias f='fzf'
@@ -160,6 +140,7 @@ alias la='eza -la --icons --group-directories-first'
 alias ll='eza -lAh --icons --group-directories-first | sed "s/^/   /"'
 alias ls='eza -x --icons --group-directories-first'
 alias lt='eza --tree --icons'
+alias m1='mv ~/Downloads/*.mp4 /Users/soc/Applications/.1/vedios'
 alias nv='nvim'
 alias nvz='nv ~/.config/zsh/.zshrc'
 alias op='open .'
@@ -188,8 +169,7 @@ alias aibre='cd /Users/soc/Documents/ClaudeDevelopment/AIBalanceApp/AIBalanceApp
 # --- git ---
 alias ga='git status'
 alias gc='git clone'
-alias gpe='git push -u gitee main'
-alias gpt='git push -u github main'
+alias gpush='git push -f gitee main && git push -f github main'
 alias gr='git remote -v'
 
 # --- homebrew ---
@@ -231,6 +211,7 @@ alias musicsyn="rsync -avz -e \"ssh -p 2222\" soc@100.67.58.98:~/docker/musicn/d
 alias de='ssh debian'
 alias dlm3u8='ssh soc@100.67.58.98 "/home/soc/bin/dl-m3u8"'
 alias geta='scp soc@100.67.58.98:/home/soc/downloads/aria2/'
+alias niri='lsof -tiTCP:5900 -sTCP:LISTEN >/dev/null 2>&1 || ssh -f -N -o ExitOnForwardFailure=yes -o ServerAliveInterval=30 -L 5900:127.0.0.1:5900 -p 2222 soc@100.67.58.98; nohup /Applications/TigerVNC.app/Contents/MacOS/vncviewer -FullScreen -FullScreenMode=Current 127.0.0.1:5900 >/dev/null 2>&1 &'
 
 # --- ukulele ---
 alias uke='cd /Users/soc/Documents/Ukulele && npm run dev'
@@ -247,6 +228,62 @@ alias ur="uv run"
 # ------------------------------
 # Function
 # ------------------------------
+
+# 一键全量更新：Homebrew（复用 brewba，即 ba 的实现）→ Node/nvm 全局包 → dsh 核心
+# 单步失败不中断，末尾汇总；有失败步骤时返回非 0
+au() {
+    setopt localoptions pipefail
+    local cur
+    local -a failed=()
+    local -a pkgs
+
+    echo "🍺 [1/3] 更新 Homebrew（系统工具和依赖）..."
+    brewba || failed+=(Homebrew)
+    echo "----------------------------------------"
+    echo ""
+
+    echo "🟢 [2/3] 更新 Node.js (nvm) 和 nvm 全局包（已排除 dsh，交 [3/3] 处理）..."
+    if [[ ! -s "${NVM_DIR:-$HOME/.nvm}/nvm.sh" ]]; then
+        echo "⚠️  未找到 nvm（${NVM_DIR:-$HOME/.nvm}），跳过 Node 更新"
+    else
+        [[ -n "${NVM_BIN:-}" ]] || lazy_load_nvm
+        cur=$(nvm version 2>/dev/null)
+        # 只能传字面量 current：nvm 发现来源 == 目标版本时直接 exit 4
+        # （"You can't reinstall global packages from the same version"）
+        if [[ "$cur" == v22.* ]]; then
+            # 已在 22 大版本：只做补丁升级，离线或已是最新不算失败
+            nvm install 22 --reinstall-packages-from=current ||
+                echo "⚠️  Node 22 未能升级（可能已是最新或离线），继续使用 $cur"
+        elif [[ "$cur" == v* ]]; then
+            nvm install 22 --reinstall-packages-from=current || failed+=(Node)
+        else
+            nvm install 22 || failed+=(Node)
+        fi
+        nvm alias default 22 >/dev/null || failed+=(Node-default)
+        npm install -g npm@latest || failed+=(npm)
+        echo "📦 全局包可更新情况（已跳过 @deepseek-ai/*）："
+        npm outdated -g 2>/dev/null | grep -v '^@deepseek-ai/' || true
+        # parseable 输出取 /node_modules/ 之后的目录名；空输出时数组为空
+        pkgs=(${(f)"$(npm ls -g --depth=0 --parseable 2>/dev/null | sed -n 's#^.*/node_modules/##p' | grep -v '^@deepseek-ai/' | grep -v '^npm$')"})
+        if (( ${#pkgs[@]} )); then
+            npm update -g "${pkgs[@]}" || failed+=(npm-globals)
+        fi
+        echo "ℹ️  Node: $(node -v 2>/dev/null), npm: $(npm -v 2>/dev/null)"
+    fi
+    echo "----------------------------------------"
+    echo ""
+
+    echo "🔍 [3/3] 检查并自动更新 dsh..."
+    dshup || failed+=(dsh)
+    echo "----------------------------------------"
+    echo ""
+
+    if (( ${#failed[@]} )); then
+        print -u2 "⚠️  未成功的步骤: ${(j: / :)failed}"
+        return 1
+    fi
+    echo "🎉 全部更新完成"
+}
 
 # 下载 B 站视频（自动合并 mp4）并转成 H.264；用法: bili <视频页URL>
 bili() {
@@ -288,6 +325,61 @@ dlpull() {
     local dest="${2:-$HOME/Downloads/debian-pull/}"
     mkdir -p "$dest"
     rsync -avzPs "debian-home:$src" "$dest"
+}
+
+# 检查并更新 dsh 核心（装在 /opt/homebrew 前缀的 npm 全局包）
+# 必须用 /opt/homebrew/bin/npm：nvm 的 npm 会把新版装进 nvm 前缀，PATH 上那份不动
+dshup() {
+    setopt localoptions pipefail
+    local npm_bin=/opt/homebrew/bin/npm
+    local root pkg cur latest path_dsh path_ver
+    if [[ ! -x "$npm_bin" ]]; then
+        print -u2 "⚠️  未找到 $npm_bin（Homebrew 的 node/npm 装了吗？）"
+        return 1
+    fi
+
+    root=$("$npm_bin" root -g 2>/dev/null)
+    # 只认 Homebrew 前缀：换成 nvm 的 npm 会把新版装进 nvm 前缀，PATH 上那份 dsh 不会变
+    if [[ "$root" != /opt/homebrew/lib/node_modules ]]; then
+        print -u2 "⚠️  npm root -g = ${root:-未知}，不是 Homebrew 前缀，已停止"
+        return 1
+    fi
+    pkg="$root/@deepseek-ai/dsh/package.json"
+    if [[ ! -r "$pkg" ]]; then
+        print -u2 "⚠️  未找到 dsh 的 npm 全局安装（$pkg）"
+        return 1
+    fi
+
+    cur=$(grep -m1 '"version"' "$pkg" | sed -n 's/.*"version": *"\([^"]*\)".*/\1/p')
+    latest=$("$npm_bin" view @deepseek-ai/dsh version 2>/dev/null)
+    if [[ -z "$latest" ]]; then
+        print -u2 "⚠️  无法获取最新版本（检查网络/代理）"
+        return 1
+    fi
+
+    if [[ "$cur" == "$latest" ]]; then
+        echo "✅ dsh 已是最新 ($cur)"
+    else
+        echo "⬆️  发现新版: $latest（当前 ${cur:-未知}），依赖较多，约需 1-3 分钟..."
+        if ! "$npm_bin" install -g \
+            --allow-scripts=@deepseek-ai/dsh-subprocess-local,koffi,node-pty,@google/genai,protobufjs \
+            @deepseek-ai/dsh@latest; then
+            print -u2 "⚠️  dsh 更新失败"
+            return 1
+        fi
+        cur=$(grep -m1 '"version"' "$pkg" | sed -n 's/.*"version": *"\([^"]*\)".*/\1/p')
+        echo "✅ 更新完成: ${cur:-未知}"
+    fi
+
+    # nvm 加载后 PATH 上前缀是 nvm 的 bin，里面的旧 dsh 会遮住刚更新的这份
+    path_dsh=$(whence -p dsh 2>/dev/null)
+    if [[ -n "$path_dsh" && "$path_dsh" != /opt/homebrew/bin/dsh ]]; then
+        path_ver=$("$path_dsh" --version 2>/dev/null)
+        if [[ "$path_ver" != "$cur" ]]; then
+            echo "⚠️  PATH 上的 dsh 是 $path_dsh（${path_ver:-未知}），与 Homebrew 版 $cur 不一致，旧副本会遮住新版"
+        fi
+    fi
+    echo "ℹ️  重启 dsh web / 桌面版后新版本生效"
 }
 
 # 逐行包成斜体（kitty 的 italic_font）；每遇 \e[0m 重置后重新开启斜体，
