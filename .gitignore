@@ -1,0 +1,8 @@
+# kitty 字体 54MB，不入库（新机器从备份/原处复制）
+kitty/font/
+
+# macOS / 编辑器临时文件
+.DS_Store
+*.swp
+*.swo
+*~
