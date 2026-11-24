@@ -118,8 +118,6 @@ done
 
 # zoxide
 eval "$(zoxide init zsh)"
-# z 的 Tab 补全改为列出 zoxide 缓存目录（补全函数见 completions/_z，必须紧跟在 init 之后重新注册）
-compdef _z z
 
 # ------------------------------
 # Aliases
