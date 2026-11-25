@@ -168,7 +168,8 @@ alias aibre='cd /Users/soc/Documents/ClaudeDevelopment/AIBalanceApp/AIBalanceApp
 # --- git ---
 alias ga='git status'
 alias gc='git clone'
-alias gpush='git push -f gitee main && git push -f github main'
+alias gl='git log'
+alias gpush='git push -u gitee main && git push -u github main'
 alias gr='git remote -v'
 
 # --- homebrew ---
