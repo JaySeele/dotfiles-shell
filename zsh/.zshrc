@@ -99,6 +99,24 @@ fi
 # Tool Initialization
 # ------------------------------
 
+# cargo（补 --bin 后的 bin 名：官方补全没写这一项，这里从 src/bin/*.rs 取）
+_cargo_complete() {
+    local -a bins
+    bins=(src/bin/*.rs(N:t:r))
+    if (( $#bins )); then
+        if [[ ${words[CURRENT-1]} == --bin ]]; then
+            compadd -a bins
+            return
+        elif [[ ${words[CURRENT]} == --bin=* ]]; then
+            compset -P '--bin='
+            compadd -a bins
+            return
+        fi
+    fi
+    _cargo
+}
+compdef _cargo_complete cargo
+
 # fzf
 source <(fzf --zsh)
 

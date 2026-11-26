@@ -12,6 +12,7 @@ secrets
 # zsh 运行时产物：每台机器不同，可自动重建
 # （.zcompdump-* 同时覆盖 .zwc 编译缓存）
 # ------------------------------
+.zcompdump*
 .zcompdump-*
 .zsh_history
 .zsh_sessions/
