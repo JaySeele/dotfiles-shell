@@ -199,8 +199,8 @@ alias omc='ssh -p 2222 -t soc@100.67.58.98 /home/soc/ollama/.venv/bin/python /ho
 alias ops='ollama ps'
 
 # --- python ---
-alias pyrun='uv run python'
-alias soud='deactivate'
+alias pyrun='echo "uv run python" && uv run python'
+alias soud='echo "deactivate" && deactivate'
 alias soup='source ./.venv/bin/activate'
 
 # --- rsync (sync) ---
@@ -208,11 +208,11 @@ alias imgo="immich-go upload from-folder -s http://100.67.58.98:2283 -k \$IMMICH
 alias musicsyn="rsync -avz -e \"ssh -p 2222\" soc@100.67.58.98:~/docker/musicn/data/ ~/Music/musicn/"
 
 # --- rust ---
-alias cn='cargo new'
-alias cr='cargo run'
+alias cn='echo "cargo new" && cargo new'
+alias cr='echo "cargo run" && cargo run'
 
 # --- ssh ---
-alias de='ssh debian'
+alias de='echo "ssh debian" && ssh debian'
 alias dlm3u8='ssh soc@100.67.58.98 "/home/soc/bin/dl-m3u8"'
 alias geta='scp soc@100.67.58.98:/home/soc/downloads/aria2/'
 alias niri='lsof -tiTCP:5900 -sTCP:LISTEN >/dev/null 2>&1 || ssh -f -N -o ExitOnForwardFailure=yes -o ServerAliveInterval=30 -L 5900:127.0.0.1:5900 -p 2222 soc@100.67.58.98; nohup /Applications/TigerVNC.app/Contents/MacOS/vncviewer -FullScreen -FullScreenMode=Current 127.0.0.1:5900 >/dev/null 2>&1 &'
