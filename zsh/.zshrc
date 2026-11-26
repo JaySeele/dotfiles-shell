@@ -207,6 +207,10 @@ alias soup='source ./.venv/bin/activate'
 alias imgo="immich-go upload from-folder -s http://100.67.58.98:2283 -k \$IMMICH_API_KEY --manage-heic-jpeg StackCoverHEIC $HOME/Pictures/Photos Library.photoslibrary"
 alias musicsyn="rsync -avz -e \"ssh -p 2222\" soc@100.67.58.98:~/docker/musicn/data/ ~/Music/musicn/"
 
+# --- rust ---
+alias cn='cargo new'
+alias cr='cargo run'
+
 # --- ssh ---
 alias de='ssh debian'
 alias dlm3u8='ssh soc@100.67.58.98 "/home/soc/bin/dl-m3u8"'
