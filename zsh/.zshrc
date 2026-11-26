@@ -133,14 +133,14 @@ alias cz='cat ~/.config/zsh/.zshrc'
 alias e='exit'
 alias f='fzf'
 alias fa='clear && LC_TIME=en_US.UTF-8 fastfetch'
-alias ff='ffmpeg'
+alias ff='echo "ffmpeg" && ffmpeg'
 alias la='eza -la --icons --group-directories-first'
 alias ll='eza -lAh --icons --group-directories-first | sed "s/^/   /"'
 alias ls='eza -x --icons --group-directories-first'
 alias lt='eza --tree --icons'
 alias m1='mv ~/Downloads/*.mp4 /Users/soc/Applications/.1/vedios'
 alias nv='nvim'
-alias nvz='nv ~/.config/zsh/.zshrc'
+alias nvz='nvim ~/.config/zsh/.zshrc'
 alias op='open .'
 alias re='sudo reboot'
 alias rr='rm -rf'
@@ -149,7 +149,7 @@ alias rrd='find . -name ".DS_Store" -type f -delete'
 alias rrg='rm -rf .git'
 alias s='sudo !!'
 alias souz='clear && source ~/.config/zsh/.zshrc'
-alias sql="unset all_proxy HTTP_PROXY http_proxy HTTPS_PROXY https_proxy && sqlmap --batch"
+alias sql='echo "sqlmap --batch" && unset all_proxy HTTP_PROXY http_proxy HTTPS_PROXY https_proxy && sqlmap --batch'
 alias targz='tar xzvf'
 alias te='tree'
 alias xf='sudo xattr -rd com.apple.quarantine '
@@ -163,7 +163,7 @@ alias zz='z -'
 alias z1='cd /Users/soc/Applications/.1'
 
 # --- aibalance ---
-alias aibre='cd /Users/soc/Documents/ClaudeDevelopment/AIBalanceApp/AIBalanceApp_macOS_v1.0.2 && killall AIBalanceApp 2>/dev/null; xcodebuild -scheme AIBalanceApp -configuration Release -destination "platform=macOS" -derivedDataPath /tmp/aibuild build && rm -rf /Applications/AIBalanceApp.app && ditto /tmp/aibuild/Build/Products/Release/AIBalanceApp.app /Applications/AIBalanceApp.app && open /Applications/AIBalanceApp.app'
+alias aibre='echo "xcodebuild AIBalanceApp (Release)" && cd /Users/soc/Documents/ClaudeDevelopment/AIBalanceApp/AIBalanceApp_macOS_v1.0.2 && killall AIBalanceApp 2>/dev/null; xcodebuild -scheme AIBalanceApp -configuration Release -destination "platform=macOS" -derivedDataPath /tmp/aibuild build && rm -rf /Applications/AIBalanceApp.app && ditto /tmp/aibuild/Build/Products/Release/AIBalanceApp.app /Applications/AIBalanceApp.app && open /Applications/AIBalanceApp.app'
 
 # --- git ---
 alias ga='git status'
@@ -173,13 +173,13 @@ alias gpush='git push -u gitee main && git push -u github main'
 alias gr='git remote -v'
 
 # --- homebrew ---
-alias ba='brewba'
+alias ba='echo "brew update && brew upgrade && brew cleanup" && brewba'
 alias bc='echo "bc is disabled. Use \bc if you really need it."'
 alias cb='brew cleanup -s && rm -rf ~/Library/Caches/Homebrew/*'
 
 # --- kitty ---
-alias icat='kitty +kitten icat'
-alias nvk='nv ~/.config/kitty/kitty.conf'
+alias icat='echo "kitty +kitten icat" && kitty +kitten icat'
+alias nvk='nvim ~/.config/kitty/kitty.conf'
 alias souk='clear && kitten @ load-config'
 alias ssh='kitty +kitten ssh'
 
@@ -187,25 +187,25 @@ alias ssh='kitty +kitten ssh'
 alias lg='lazygit'
 
 # --- lua ---
-alias lj='luajit'
-alias lu='lua'
+alias lj='echo "luajit" && luajit'
+alias lu='echo "lua" && lua'
 
 # --- ollama ---
-alias br='ssh -p 2222 soc@100.67.58.98 "~/ollama/daily-brief.sh"'
-alias o14='ollama run qwen3:14b'
-alias o8='ollama run qwen3:8b'
+alias br='echo "ssh debian: ~/ollama/daily-brief.sh" && ssh -p 2222 soc@100.67.58.98 "~/ollama/daily-brief.sh"'
+alias o14='echo "ollama run qwen3:14b" && ollama run qwen3:14b'
+alias o8='echo "ollama run qwen3:8b" && ollama run qwen3:8b'
 alias ols='ollama list'
-alias omc='ssh -p 2222 -t soc@100.67.58.98 /home/soc/ollama/.venv/bin/python /home/soc/ollama/mchat.py'
+alias omc='echo "ssh debian: ollama/mchat.py" && ssh -p 2222 -t soc@100.67.58.98 /home/soc/ollama/.venv/bin/python /home/soc/ollama/mchat.py'
 alias ops='ollama ps'
 
 # --- python ---
 alias pyrun='echo "uv run python" && uv run python'
 alias soud='echo "deactivate" && deactivate'
-alias soup='source ./.venv/bin/activate'
+alias soup='echo "source ./.venv/bin/activate" && source ./.venv/bin/activate'
 
 # --- rsync (sync) ---
-alias imgo="immich-go upload from-folder -s http://100.67.58.98:2283 -k \$IMMICH_API_KEY --manage-heic-jpeg StackCoverHEIC $HOME/Pictures/Photos Library.photoslibrary"
-alias musicsyn="rsync -avz -e \"ssh -p 2222\" soc@100.67.58.98:~/docker/musicn/data/ ~/Music/musicn/"
+alias imgo="echo \"immich-go upload\" && immich-go upload from-folder -s http://100.67.58.98:2283 -k \$IMMICH_API_KEY --manage-heic-jpeg StackCoverHEIC $HOME/Pictures/Photos Library.photoslibrary"
+alias musicsyn="echo \"rsync musicn\" && rsync -avz -e \"ssh -p 2222\" soc@100.67.58.98:~/docker/musicn/data/ ~/Music/musicn/"
 
 # --- rust ---
 alias cn='echo "cargo new" && cargo new'
@@ -213,21 +213,21 @@ alias cr='echo "cargo run" && cargo run'
 
 # --- ssh ---
 alias de='echo "ssh debian" && ssh debian'
-alias dlm3u8='ssh soc@100.67.58.98 "/home/soc/bin/dl-m3u8"'
-alias geta='scp soc@100.67.58.98:/home/soc/downloads/aria2/'
-alias niri='lsof -tiTCP:5900 -sTCP:LISTEN >/dev/null 2>&1 || ssh -f -N -o ExitOnForwardFailure=yes -o ServerAliveInterval=30 -L 5900:127.0.0.1:5900 -p 2222 soc@100.67.58.98; nohup /Applications/TigerVNC.app/Contents/MacOS/vncviewer -FullScreen -FullScreenMode=Current 127.0.0.1:5900 >/dev/null 2>&1 &'
+alias dlm3u8='echo "ssh debian: dl-m3u8" && ssh soc@100.67.58.98 "/home/soc/bin/dl-m3u8"'
+alias geta='echo "scp debian: ~/downloads/aria2/" && scp soc@100.67.58.98:/home/soc/downloads/aria2/'
+alias niri='echo "TigerVNC → debian:5900" && lsof -tiTCP:5900 -sTCP:LISTEN >/dev/null 2>&1 || ssh -f -N -o ExitOnForwardFailure=yes -o ServerAliveInterval=30 -L 5900:127.0.0.1:5900 -p 2222 soc@100.67.58.98; nohup /Applications/TigerVNC.app/Contents/MacOS/vncviewer -FullScreen -FullScreenMode=Current 127.0.0.1:5900 >/dev/null 2>&1 &'
 
 # --- ukulele ---
-alias uke='cd /Users/soc/Documents/Ukulele && npm run dev'
-alias ukeb='cd /Users/soc/Documents/Ukulele && nohup npm run dev > /tmp/uke-dev.log 2>&1 &'
+alias uke='echo "cd ~/Documents/Ukulele && npm run dev" && cd /Users/soc/Documents/Ukulele && npm run dev'
+alias ukeb='echo "cd ~/Documents/Ukulele && nohup npm run dev > /tmp/uke-dev.log" && cd /Users/soc/Documents/Ukulele && nohup npm run dev > /tmp/uke-dev.log 2>&1 &'
 alias ukek='lsof -tiTCP:5173 -sTCP:LISTEN | xargs kill'
 alias ukel='tail -f /tmp/uke-dev.log'
 # 练习用：构建后跑静态预览，不受源码改动影响（dev 会 HMR 重载，练习时别用）
-alias ukep='cd /Users/soc/Documents/Ukulele && npm run build && nohup npm run preview > /tmp/uke-preview.log 2>&1 & sleep 3; echo "小U练习室 → http://localhost:4173/"'
+alias ukep='echo "cd ~/Documents/Ukulele && npm run build && npm run preview" && cd /Users/soc/Documents/Ukulele && npm run build && nohup npm run preview > /tmp/uke-preview.log 2>&1 & sleep 3; echo "小U练习室 → http://localhost:4173/"'
 alias ukepk='lsof -tiTCP:4173 -sTCP:LISTEN | xargs kill'
 
 # --- uv ---
-alias ur="uv run"
+alias ur='echo "uv run" && uv run'
 
 # ------------------------------
 # Function
