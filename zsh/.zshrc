@@ -31,7 +31,6 @@ export PATH="$HOME/.dsh/bin:$PATH"
 
 # homebrew
 export PATH="/opt/homebrew/bin:$PATH"
-export PATH="/opt/homebrew/opt/curl/bin:$PATH"
 
 # java
 export JAVA_HOME="/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home"
@@ -82,9 +81,6 @@ export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.ustc.edu.cn/homebrew-bottles"
 export HOMEBREW_CASK_GIT_REMOTE="https://mirrors.ustc.edu.cn/homebrew-cask.git"
 export HOMEBREW_PIP_INDEX_URL="https://mirrors.ustc.edu.cn/pypi/web/simple"
 
-# ollama (Debian 远程模型服务)
-export OLLAMA_HOST="100.67.58.98:11434"
-
 # XDG / config directories
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
@@ -103,8 +99,8 @@ fi
 _cargo_complete() {
     local -a bins
     bins=(src/bin/*.rs(N:t:r))
-    if (( $#bins )); then
-        if [[ ${words[CURRENT-1]} == --bin ]]; then
+    if (($#bins)); then
+        if [[ ${words[CURRENT - 1]} == --bin ]]; then
             compadd -a bins
             return
         elif [[ ${words[CURRENT]} == --bin=* ]]; then
@@ -176,18 +172,16 @@ alias zg='cd ~/Git'
 alias zk='cd ~/.config/kitty/'
 alias zm='cd /tmp'
 alias zs='cd /Users/soc/Library/Application\ Support/'
-alias zu='cd /Users/soc/Documents/Ukulele/个人曲谱'
 alias zz='z -'
 alias z1='cd /Users/soc/Applications/.1'
-
-# --- aibalance ---
-alias aibre='echo "xcodebuild AIBalanceApp (Release)" && cd /Users/soc/Documents/ClaudeDevelopment/AIBalanceApp/AIBalanceApp_macOS_v1.0.2 && killall AIBalanceApp 2>/dev/null; xcodebuild -scheme AIBalanceApp -configuration Release -destination "platform=macOS" -derivedDataPath /tmp/aibuild build && rm -rf /Applications/AIBalanceApp.app && ditto /tmp/aibuild/Build/Products/Release/AIBalanceApp.app /Applications/AIBalanceApp.app && open /Applications/AIBalanceApp.app'
 
 # --- git ---
 alias ga='git status'
 alias gc='git clone'
+alias gf='echo "gitee:" && git push --force-with-lease gitee main && echo "github:" && git push --force-with-lease github main'
 alias gl='git log'
-alias gpush='git push -u gitee main && git push -u github main'
+alias gpush-u='echo "gitee:" && git push -u gitee main && echo "github:" &&  git push -u github main'
+alias gpush-f='echo "gitee:" && git push -f gitee main && echo "github:" &&  git push -f github main'
 alias gr='git remote -v'
 
 # --- homebrew ---
@@ -208,14 +202,6 @@ alias lg='lazygit'
 alias lj='echo "luajit" && luajit'
 alias lu='echo "lua" && lua'
 
-# --- ollama ---
-alias br='echo "ssh debian: ~/ollama/daily-brief.sh" && ssh -p 2222 soc@100.67.58.98 "~/ollama/daily-brief.sh"'
-alias o14='echo "ollama run qwen3:14b" && ollama run qwen3:14b'
-alias o8='echo "ollama run qwen3:8b" && ollama run qwen3:8b'
-alias ols='ollama list'
-alias omc='echo "ssh debian: ollama/mchat.py" && ssh -p 2222 -t soc@100.67.58.98 /home/soc/ollama/.venv/bin/python /home/soc/ollama/mchat.py'
-alias ops='ollama ps'
-
 # --- python ---
 alias pyrun='echo "uv run python" && uv run python'
 alias soud='echo "deactivate" && deactivate'
@@ -234,15 +220,6 @@ alias de='echo "ssh debian" && ssh debian'
 alias dlm3u8='echo "ssh debian: dl-m3u8" && ssh soc@100.67.58.98 "/home/soc/bin/dl-m3u8"'
 alias geta='echo "scp debian: ~/downloads/aria2/" && scp soc@100.67.58.98:/home/soc/downloads/aria2/'
 alias niri='echo "TigerVNC → debian:5900" && lsof -tiTCP:5900 -sTCP:LISTEN >/dev/null 2>&1 || ssh -f -N -o ExitOnForwardFailure=yes -o ServerAliveInterval=30 -L 5900:127.0.0.1:5900 -p 2222 soc@100.67.58.98; nohup /Applications/TigerVNC.app/Contents/MacOS/vncviewer -FullScreen -FullScreenMode=Current 127.0.0.1:5900 >/dev/null 2>&1 &'
-
-# --- ukulele ---
-alias uke='echo "cd ~/Documents/Ukulele && npm run dev" && cd /Users/soc/Documents/Ukulele && npm run dev'
-alias ukeb='echo "cd ~/Documents/Ukulele && nohup npm run dev > /tmp/uke-dev.log" && cd /Users/soc/Documents/Ukulele && nohup npm run dev > /tmp/uke-dev.log 2>&1 &'
-alias ukek='lsof -tiTCP:5173 -sTCP:LISTEN | xargs kill'
-alias ukel='tail -f /tmp/uke-dev.log'
-# 练习用：构建后跑静态预览，不受源码改动影响（dev 会 HMR 重载，练习时别用）
-alias ukep='echo "cd ~/Documents/Ukulele && npm run build && npm run preview" && cd /Users/soc/Documents/Ukulele && npm run build && nohup npm run preview > /tmp/uke-preview.log 2>&1 & sleep 3; echo "小U练习室 → http://localhost:4173/"'
-alias ukepk='lsof -tiTCP:4173 -sTCP:LISTEN | xargs kill'
 
 # --- uv ---
 alias ur='echo "uv run" && uv run'
